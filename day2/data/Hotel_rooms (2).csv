@@ -1,0 +1,11 @@
+﻿Room_id,Type,Price,Capacity,Status
+1,Economy,2500,2,Available
+2,Economy,2500,2,Occupied
+3,Standard,3500,2,Available
+4,Standard,3500,2,Occupied
+5,Standard Plus,4500,3,Available
+6,Semi-Luxury,6000,3,Occupied
+7,Luxury,9000,4,Available
+8,Luxury,9000,4,Occupied
+9,Presidential,15000,4,Available
+10,Family,5000,4,Occupied
