@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить бронь{% endblock %}
+
+{% block content %}
+<h1>➕ Добавить бронь</h1>
+
+<form method="POST">
+    <div>
+        <label>ID гостя:</label>
+        <input type="number" name="guest_id" required>
+    </div>
+    
+    <div>
+        <label>ID номера:</label>
+        <input type="number" name="room_id" required>
+    </div>
+    
+    <div>
+        <label>Дата заезда:</label>
+        <input type="date" name="arrival_date" required>
+    </div>
+    
+    <div>
+        <label>Дата выезда:</label>
+        <input type="date" name="departure_date" required>
+    </div>
+    
+    <div>
+        <label>Статус:</label>
+        <select name="status">
+            <option value="Active">Активный</option>
+            <option value="Confirmed">Подтверждён</option>
+            <option value="Completed">Завершён</option>
+            <option value="Cancelled">Отменён</option>
+        </select>
+    </div>
+    
+    <div>
+        <label>Цена (₽):</label>
+        <input type="number" name="price" required>
+    </div>
+    
+    <button type="submit">💾 Сохранить</button>
+    <a href="{{ url_for('admin_reservations') }}">Отмена</a>
+</form>
+{% endblock %}

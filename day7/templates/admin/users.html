@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+<h1>Управление пользователями</h1>
+<a href="{{ url_for('admin_dashboard') }}" class="btn">← Назад</a>
+
+<table border="1" cellpadding="8" style="margin-top: 20px; width: 100%;">
+    <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Роль</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.login }}</td>
+            <td>{{ 'Админ' if user.role == 'admin' else 'Работник' }}</td>
+            <td>{{ user.email if user.email else '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
