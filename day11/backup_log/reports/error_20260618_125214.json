@@ -1,0 +1,7 @@
+{
+    "job_name": "cockroach_full_backup",
+    "status": "failed",
+    "error_message": "module 'os' has no attribute 'statvfs'",
+    "duration_seconds": 0.0071947574615478516,
+    "timestamp": "2026-06-18T12:52:14.789959"
+}
