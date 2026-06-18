@@ -1,0 +1,1 @@
+{ "total_amount": 1500000, ... } → valid=False, reason="Сумма > 1M"
