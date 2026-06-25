@@ -1,0 +1,182 @@
+# tests/test_user.py
+import pytest
+from src.user import (
+    validate_email,
+    validate_password,
+    validate_age,
+    create_user,
+    update_user_age
+)
+
+
+# ============================================
+# ТЕСТЫ ДЛЯ validate_email
+# ============================================
+
+def test_validate_email_valid():
+    """Проверка корректного email"""
+    assert validate_email("user@example.com") is True
+    assert validate_email("test@mail.ru") is True
+
+
+def test_validate_email_no_at():
+    """Email без @"""
+    assert validate_email("userexample.com") is False
+
+
+def test_validate_email_empty():
+    """Пустой email"""
+    assert validate_email("") is False
+
+
+@pytest.mark.parametrize("email, expected", [
+    ("user+tag@example.com", True),
+    ("user.name@example.com", True),
+    ("user_name@example.com", True),
+    ("user@sub.domain.com", True),
+    ("user@example.co.uk", True),
+    ("user@example", False),
+    ("user@.com", False),
+    ("user@example.c", False),
+    ("user@exa_mple.com", False),
+])
+def test_validate_email_parametrized(email, expected):
+    assert validate_email(email) == expected
+
+
+# ============================================
+# ТЕСТЫ ДЛЯ validate_password
+# ============================================
+
+def test_validate_password_valid():
+    assert validate_password("Passw0rd!") is True
+    assert validate_password("P@ssw0rd") is True
+
+
+def test_validate_password_too_short():
+    assert validate_password("Pass1!") is False
+
+
+def test_validate_password_no_digit():
+    assert validate_password("Password!") is False
+
+
+def test_validate_password_no_special():
+    assert validate_password("Password1") is False
+
+
+@pytest.mark.parametrize("password, expected", [
+    ("Passw0rd!", True),
+    ("Pass123!", True),
+    ("Passw0rd", False),
+    ("P@ssw0rd", True),
+    ("Passwo1!", True),
+    ("12345678!", False),
+    ("Passw0rd@", True),
+    ("Abc123!!", True),
+    ("short1!", False),
+    ("NoSpecial1", False),
+    ("NoDigit!", False),
+])
+def test_validate_password_parametrized(password, expected):
+    assert validate_password(password) == expected
+
+
+# ============================================
+# ТЕСТЫ ДЛЯ validate_age
+# ============================================
+
+def test_validate_age_valid():
+    assert validate_age(25) is True
+    assert validate_age(18) is True
+    assert validate_age(120) is True
+
+
+def test_validate_age_too_young():
+    assert validate_age(17) is False
+
+
+def test_validate_age_too_old():
+    assert validate_age(121) is False
+    assert validate_age(150) is False
+
+
+def test_validate_age_negative():
+    assert validate_age(-5) is False
+
+
+@pytest.mark.parametrize("age, expected", [
+    (18, True),
+    (120, True),
+    (25, True),
+    (17, False),
+    (121, False),
+    (0, False),
+    (-5, False),
+    (150, False),
+])
+def test_validate_age_parametrized(age, expected):
+    assert validate_age(age) == expected
+
+
+def test_validate_age_non_integer():
+    assert validate_age(25.5) is False
+    assert validate_age("25") is False
+    assert validate_age(None) is False
+
+
+# ============================================
+# ТЕСТЫ ДЛЯ create_user
+# ============================================
+
+def test_create_user_valid():
+    user = create_user("test@example.com", "Passw0rd!", 25)
+    assert user["email"] == "test@example.com"
+    assert user["age"] == 25
+    assert user["active"] is True
+
+
+def test_create_user_invalid_email():
+    with pytest.raises(ValueError, match="Invalid email"):
+        create_user("invalid", "Passw0rd!", 25)
+
+
+def test_create_user_invalid_password():
+    with pytest.raises(ValueError, match="Invalid password"):
+        create_user("test@example.com", "password", 25)
+
+
+def test_create_user_invalid_age():
+    with pytest.raises(ValueError, match="Invalid age"):
+        create_user("test@example.com", "Passw0rd!", 15)
+
+
+def test_create_user_age_121():
+    with pytest.raises(ValueError, match="Invalid age"):
+        create_user("test@example.com", "Passw0rd!", 121)
+
+
+def test_create_user_invalid_age_type():
+    with pytest.raises(ValueError, match="Age must be integer"):
+        create_user("test@example.com", "Passw0rd!", 25.5)
+
+
+# ============================================
+# ТЕСТЫ ДЛЯ update_user_age
+# ============================================
+
+def test_update_user_age_valid():
+    user = create_user("test@example.com", "Passw0rd!", 25)
+    updated = update_user_age(user, 30)
+    assert updated["age"] == 30
+
+
+def test_update_user_age_invalid():
+    user = create_user("test@example.com", "Passw0rd!", 25)
+    with pytest.raises(ValueError, match="Invalid age"):
+        update_user_age(user, 15)
+
+
+def test_update_user_age_empty_user():
+    with pytest.raises(ValueError, match="User not found"):
+        update_user_age(None, 30)
